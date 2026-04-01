@@ -18,42 +18,43 @@ const Hero = () => {
 
       <div className="section-container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          className="text-center lg:text-left"
         >
-          <div className="inline-flex items-center space-x-2 bg-brand-light/20 backdrop-blur-sm border border-brand-light/30 px-3 py-1 rounded-full mb-6">
+          <div className="inline-flex items-center space-x-2 bg-brand-light/20 backdrop-blur-sm border border-brand-light/30 px-3 py-1 rounded-full mb-6 mx-auto lg:mx-0">
             <span className="w-2 h-2 bg-brand-red rounded-full animate-pulse"></span>
-            <span className="text-brand-light text-xs font-bold uppercase tracking-wider">Đối tác vật tư tin cậy</span>
+            <span className="text-brand-light text-[10px] md:text-xs font-bold uppercase tracking-wider">Đối tác vật tư tin cậy</span>
           </div>
           
-          <h1 className="text-4xl md:text-6xl lg:text-7xl text-white mb-6 leading-[1.1]">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-white mb-6 leading-[1.1] font-display">
             NHÂN KHANG AN <br />
             <span className="text-brand-light italic">Giải Pháp Vật Tư Toàn Diện</span>
           </h1>
           
-          <div className="space-y-4 mb-8">
-            <p className="text-xl text-slate-200 font-medium">Có phải doanh nghiệp của bạn đang...</p>
-            <ul className="space-y-3">
+          <div className="space-y-4 mb-8 max-w-lg mx-auto lg:mx-0">
+            <p className="text-lg md:text-xl text-slate-200 font-medium">Có phải doanh nghiệp của bạn đang...</p>
+            <ul className="space-y-3 text-left">
               {[
                 'Tốn chi phí vật tư đóng gói nhưng hiệu quả chưa tối ưu?',
                 'Lo lắng về chất lượng vật liệu ảnh hưởng đến sản phẩm?',
                 'Mong muốn một đối tác cung ứng ổn định – bền vững?'
               ].map((item, idx) => (
-                <li key={idx} className="flex items-start space-x-3 text-slate-300">
-                  <CheckCircle2 className="text-brand-light mt-1 flex-shrink-0" size={20} />
+                <li key={idx} className="flex items-start space-x-3 text-slate-300 text-sm md:text-base">
+                  <CheckCircle2 className="text-brand-light mt-1 flex-shrink-0" size={18} />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <a href="#contact" className="btn-accent text-lg px-8 py-4 group">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <a href="#contact" className="btn-accent text-base md:text-lg px-8 py-4 group">
               Tư vấn giải pháp
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
             </a>
-            <a href="#products" className="btn-secondary bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm text-lg px-8 py-4">
+            <a href="#products" className="btn-secondary bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm text-base md:text-lg px-8 py-4">
               Xem danh mục sản phẩm
             </a>
           </div>

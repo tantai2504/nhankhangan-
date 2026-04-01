@@ -34,14 +34,14 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <a href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-brand-dark rounded-lg flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-brand-dark rounded-lg flex items-center justify-center text-white font-bold text-lg md:text-xl">
                 NKA
               </div>
               <div className="flex flex-col">
-                <span className={`font-display font-bold text-xl leading-none ${isScrolled ? 'text-brand-dark' : 'text-white'}`}>
+                <span className={`font-display font-bold text-lg md:text-xl leading-none ${isScrolled ? 'text-brand-dark' : 'text-white'}`}>
                   NHÂN KHANG AN
                 </span>
-                <span className={`text-[10px] font-medium tracking-widest ${isScrolled ? 'text-slate-500' : 'text-slate-200'}`}>
+                <span className={`text-[8px] md:text-[10px] font-medium tracking-widest ${isScrolled ? 'text-slate-500' : 'text-slate-200'}`}>
                   BẠN THỊNH VƯỢNG - CHÚNG TÔI HẠNH PHÚC
                 </span>
               </div>
@@ -49,12 +49,12 @@ const Header = () => {
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className={`text-sm font-semibold transition-colors ${
+                className={`text-sm font-bold transition-colors ${
                   isScrolled ? 'text-slate-700 hover:text-brand-dark' : 'text-white hover:text-brand-light'
                 }`}
               >
@@ -63,19 +63,19 @@ const Header = () => {
             ))}
             <a 
               href="#contact" 
-              className="btn-accent px-4 py-2 text-sm"
+              className="btn-accent px-5 py-2.5 text-sm"
             >
               Tư vấn ngay
             </a>
           </nav>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`${isScrolled ? 'text-slate-700' : 'text-white'} hover:text-brand-light focus:outline-none`}
+              className={`p-2 rounded-lg ${isScrolled ? 'text-slate-700' : 'text-white'} hover:bg-white/10 focus:outline-none transition-colors`}
             >
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
@@ -85,31 +85,44 @@ const Header = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-slate-100 overflow-hidden"
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[60] lg:hidden bg-white flex flex-col"
           >
-            <div className="px-4 pt-2 pb-6 space-y-1">
-              {navLinks.map((link) => (
-                <a
+            <div className="p-4 flex justify-between items-center border-b border-slate-100">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-brand-dark rounded-lg flex items-center justify-center text-white font-bold">NKA</div>
+                <span className="font-display font-bold text-brand-dark">NHÂN KHANG AN</span>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="flex-grow overflow-y-auto py-8 px-6 space-y-6">
+              {navLinks.map((link, idx) => (
+                <motion.a
                   key={link.name}
                   href={link.href}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-4 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-dark rounded-md"
+                  className="block text-2xl font-bold text-slate-800 hover:text-brand-dark transition-colors"
                 >
                   {link.name}
-                </a>
+                </motion.a>
               ))}
-              <div className="pt-4 px-3">
-                <a
-                  href="#contact"
-                  onClick={() => setIsOpen(false)}
-                  className="w-full btn-accent flex justify-center"
-                >
-                  Liên hệ hợp tác
-                </a>
-              </div>
+            </div>
+            <div className="p-6 border-t border-slate-100">
+              <a
+                href="#contact"
+                onClick={() => setIsOpen(false)}
+                className="w-full btn-accent flex justify-center py-4 text-lg"
+              >
+                Liên hệ hợp tác
+              </a>
             </div>
           </motion.div>
         )}

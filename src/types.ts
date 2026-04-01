@@ -1,3 +1,18 @@
+export interface Award {
+  id: string;
+  title: string;
+  year: string;
+  description: string;
+  image: string;
+}
+
+export interface ProcessStep {
+  number: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -5,6 +20,8 @@ export interface Product {
   description: string;
   image: string;
   features: string[];
+  isFeatured?: boolean;
+  industryTag?: string;
 }
 
 export interface Category {

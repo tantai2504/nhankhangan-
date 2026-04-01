@@ -15,7 +15,7 @@ const ProductCategories = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {CATEGORIES.map((category, idx) => {
             const IconComponent = (Icons as any)[category.icon];
             return (
@@ -25,24 +25,24 @@ const ProductCategories = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group bg-white rounded-xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col h-full"
+                className="group bg-white rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col h-full"
               >
-                <div className="w-14 h-14 bg-brand-dark/5 rounded-lg flex items-center justify-center text-brand-dark mb-6 group-hover:bg-brand-dark group-hover:text-white transition-colors duration-300">
-                  {IconComponent && <IconComponent size={32} />}
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-brand-dark/5 rounded-xl flex items-center justify-center text-brand-dark mb-6 group-hover:bg-brand-dark group-hover:text-white transition-colors duration-300">
+                  {IconComponent && <IconComponent size={28} />}
                 </div>
-                <h4 className="text-xl font-bold text-slate-900 mb-4">{category.name}</h4>
-                <p className="text-slate-600 mb-6 flex-grow">{category.description}</p>
+                <h4 className="text-lg md:text-xl font-bold text-slate-900 mb-4">{category.name}</h4>
+                <p className="text-slate-600 text-sm md:text-base mb-6 flex-grow">{category.description}</p>
                 <ul className="space-y-2 mb-8">
                   {category.products.slice(0, 3).map((p) => (
-                    <li key={p.id} className="flex items-center text-sm text-slate-500">
-                      <Icons.ChevronRight size={16} className="text-brand-light mr-2" />
+                    <li key={p.id} className="flex items-center text-xs md:text-sm text-slate-500">
+                      <Icons.ChevronRight size={14} className="text-brand-light mr-2" />
                       {p.name}
                     </li>
                   ))}
                 </ul>
                 <a 
                   href={`#contact`} 
-                  className="inline-flex items-center text-brand-dark font-bold hover:text-brand-red transition-colors"
+                  className="inline-flex items-center text-brand-dark font-bold hover:text-brand-red transition-colors text-sm md:text-base"
                 >
                   Tư vấn giải pháp
                   <Icons.ArrowRight size={18} className="ml-2" />
