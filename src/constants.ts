@@ -1,59 +1,116 @@
-import { Category, Capability, Testimonial } from './types';
+import { Category, Capability, Testimonial, Award, ProcessStep } from './types';
+
+// Helper to resolve image paths from src/assets/images
+const img = (name: string) => new URL(`./assets/images/${name}`, import.meta.url).href;
+
+export const COMPANY_INFO = {
+  name: 'Công ty TNHH Nhân Khang An',
+  shortName: 'NHÂN KHANG AN',
+  phone: '0944 27 27 26',
+  phoneHref: 'tel:0944272726',
+  address: 'Đường QL13, Khu phố 1, Phường Thành Tâm, Thị xã Chơn Thành, Tỉnh Bình Phước',
+  email: 'dovudinhchi@gmail.com',
+  slogan: 'Nhân Khang An - Bạn thịnh vượng, chúng tôi hạnh phúc',
+};
 
 export const CATEGORIES: Category[] = [
   {
-    id: 'adhesives',
-    name: 'Keo & Vật liệu đóng gói',
-    icon: 'Wrench',
-    description: 'Giải pháp kết dính công nghiệp đa dạng, từ keo silicone đến băng keo chuyên dụng.',
-    products: [
-      { id: 'p1', name: 'Keo công nghiệp', category: 'adhesives', description: 'Độ bền cao, chịu nhiệt tốt.', image: 'https://images.unsplash.com/photo-1567360420413-54bc956504c0?auto=format&fit=crop&q=80&w=400', features: ['Chịu nhiệt', 'Kết dính cực mạnh'], isFeatured: true, industryTag: 'Sản xuất' },
-      { id: 'p2', name: 'Keo silicone', category: 'adhesives', description: 'Chống thấm, linh hoạt.', image: 'https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&q=80&w=400', features: ['Chống thấm', 'Đàn hồi'] },
-      { id: 'p3', name: 'Băng keo đóng gói', category: 'adhesives', description: 'Dính chắc trên nhiều bề mặt.', image: 'https://images.unsplash.com/photo-1603912627214-9011de55a043?auto=format&fit=crop&q=80&w=400', features: ['Nhiều kích cỡ', 'Dính tốt'], isFeatured: true, industryTag: 'Logistics' },
-    ]
-  },
-  {
-    id: 'strapping',
-    name: 'Dây đai - Vật tư cố định',
+    id: 'tape-packing',
+    name: 'Băng keo đóng gói',
     icon: 'Package',
-    description: 'Đảm bảo an toàn cho hàng hóa trong quá trình vận chuyển và lưu kho.',
+    description: 'Băng keo trong & đục đa dạng trọng lượng, phục vụ đóng gói hàng hóa chuyên nghiệp.',
     products: [
-      { id: 'p4', name: 'Dây đai nhựa', category: 'strapping', description: 'Nhẹ, bền, tiết kiệm.', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=400', features: ['PP/PET', 'Chịu lực tốt'], isFeatured: true, industryTag: 'Logistics' },
-      { id: 'p5', name: 'Dây đai thép', category: 'strapping', description: 'Dành cho hàng nặng, siêu trọng.', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=400', features: ['Thép mạ kẽm', 'Siêu bền'] },
-      { id: 'p6', name: 'Thiết bị siết đai', category: 'strapping', description: 'Dụng cụ cầm tay và máy tự động.', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=400', features: ['Dễ sử dụng', 'Hiệu suất cao'] },
+      { id: 'p1', name: 'Băng keo trong', category: 'tape-packing', description: 'Khổ 2F4 và 4F8, nhiều trọng lượng.', image: img('bangkeotrong.png'), features: ['1 kg', '1.2 kg', '1.4 kg', '1.6 kg', '1.8 kg'], isFeatured: true, industryTag: 'Logistics' },
+      { id: 'p2', name: 'Băng keo đục', category: 'tape-packing', description: 'Khổ 2F4 và 4F8, nhiều trọng lượng.', image: img('bangkeoduc.png'), features: ['1 kg', '1.2 kg', '1.4 kg', '1.6 kg', '1.8 kg'], isFeatured: true, industryTag: 'Logistics' },
+      { id: 'p3', name: 'Băng keo hàng dễ vỡ', category: 'tape-packing', description: 'Chuyên dụng cho hàng dễ vỡ.', image: img('bangkeomau2.png'), features: ['1.2 kg', '1.8 kg'] },
+      { id: 'p3b', name: 'Băng keo văn phòng phẩm', category: 'tape-packing', description: 'Đa dạng kích cỡ cho văn phòng.', image: img('bangkeovanphongpham.png'), features: ['Nhiều size', 'Trong suốt'], isFeatured: true, industryTag: 'Văn phòng' },
     ]
   },
   {
-    id: 'hardware',
-    name: 'Vít - Kim khí',
-    icon: 'Box',
-    description: 'Phụ kiện kim khí chất lượng cao cho xây dựng và sản xuất.',
+    id: 'tape-paper',
+    name: 'Băng keo Giấy & Băng keo 2 mặt',
+    icon: 'Layers',
+    description: 'Băng keo giấy và băng keo 2 mặt đa dạng khổ và chiều dài.',
     products: [
-      { id: 'p7', name: 'Vít inox', category: 'hardware', description: 'Chống gỉ sét, thẩm mỹ.', image: 'https://images.unsplash.com/photo-1586864387917-f729a5018101?auto=format&fit=crop&q=80&w=400', features: ['Inox 304/316', 'Nhiều quy cách'], isFeatured: true, industryTag: 'Xây dựng' },
-      { id: 'p8', name: 'Bulong', category: 'hardware', description: 'Chịu lực cao, chuẩn quốc tế.', image: 'https://images.unsplash.com/photo-1530124560677-bdaea027d896?auto=format&fit=crop&q=80&w=400', features: ['Cấp bền cao', 'Chính xác'] },
-      { id: 'p9', name: 'Phụ kiện kim khí', category: 'hardware', description: 'Đa dạng chủng loại.', image: 'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=400', features: ['Chất lượng ổn định'] },
-    ]
-  },
-  {
-    id: 'protection',
-    name: 'Màng PE - Xốp bảo vệ',
-    icon: 'ShieldCheck',
-    description: 'Bảo vệ bề mặt sản phẩm khỏi trầy xước và va đập.',
-    products: [
-      { id: 'p10', name: 'Màng PE', category: 'protection', description: 'Độ co giãn tuyệt vời.', image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&q=80&w=400', features: ['Quấn tay/máy', 'Trong suốt'], isFeatured: true, industryTag: 'Logistics' },
-      { id: 'p11', name: 'Xốp nổ', category: 'protection', description: 'Chống va đập hiệu quả.', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=400', features: ['Nhiều khổ rộng', 'Dẻo dai'] },
-      { id: 'p12', name: 'Xốp foam', category: 'protection', description: 'Mềm mại, bảo vệ tinh tế.', image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=400', features: ['Chống trầy', 'Cách nhiệt nhẹ'] },
+      { id: 'p4', name: 'Băng keo giấy', category: 'tape-paper', description: 'Khổ 2F4 và 4F8.', image: img('bangkeogiay.png'), features: ['12m', '18m', '30m', '45m'], isFeatured: true, industryTag: 'Sản xuất' },
+      { id: 'p5', name: 'Băng keo giấy 2 mặt', category: 'tape-paper', description: 'Khổ 1F2, 2F4, 4F8.', image: img('bangkeogiay2.png'), features: ['12m', '18m', '30m', '45m'] },
+      { id: 'p5b', name: 'Băng keo giấy đa chiều dài', category: 'tape-paper', description: 'Từ 12m đến 35m, nhiều khổ.', image: img('bangkeogiay12-35m.png'), features: ['12m', '18m', '25m', '35m'], isFeatured: true, industryTag: 'Sản xuất' },
     ]
   },
   {
     id: 'waterproofing',
-    name: 'Vật liệu chống dột - thấm',
+    name: 'Vật liệu Chống dột & Cách nhiệt',
     icon: 'Home',
-    description: 'Giải pháp bảo vệ công trình bền vững trước thời tiết.',
+    description: 'Giải pháp chống dột, chống thấm và cách nhiệt cho công trình.',
     products: [
-      { id: 'p13', name: 'Sơn chống thấm', category: 'waterproofing', description: 'Công nghệ tiên tiến.', image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&q=80&w=400', features: ['Bám dính tốt', 'Kháng UV'], isFeatured: true, industryTag: 'Xây dựng' },
-      { id: 'p14', name: 'Keo chống dột', category: 'waterproofing', description: 'Xử lý triệt để các vết nứt.', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=400', features: ['Nhanh khô', 'Bền thời tiết'] },
-      { id: 'p15', name: 'Giải pháp xử lý mái', category: 'waterproofing', description: 'Tư vấn trọn gói.', image: 'https://images.unsplash.com/photo-1632759162353-19c9a57c7fb7?auto=format&fit=crop&q=80&w=400', features: ['Hiệu quả lâu dài'] },
+      { id: 'p6', name: 'Băng keo chống dột X2000', category: 'waterproofing', description: 'Chống dột hiệu quả, nhiều khổ rộng.', image: img('bangkeochongdot.png'), features: ['Khổ 5cm', 'Khổ 10cm', 'Khổ 15cm', 'Khổ 20cm'], isFeatured: true, industryTag: 'Xây dựng' },
+      { id: 'p7', name: 'Băng keo chống dột nhựa đường', category: 'waterproofing', description: 'Chống dột chuyên dụng nhựa đường.', image: img('bangkeochongdotnhuaduong.png'), features: ['Khổ 5cm', 'Khổ 10cm', 'Khổ 15cm', 'Khổ 20cm'] },
+      { id: 'p8', name: 'Cuộn lưới thủy tinh', category: 'waterproofing', description: 'Gia cố chống thấm, khổ 1m x 50m.', image: img('cuonluoithuytinh.png'), features: ['3×3', '4×4', '5×5'] },
+      { id: 'p9', name: 'Cuộn chống dột nhựa đường', category: 'waterproofing', description: 'Cuộn nhựa đường khổ 1m x 5m.', image: img('cuonluoithuytinh.png'), features: ['Khổ 1m x 5m'] },
+    ]
+  },
+  {
+    id: 'tape-specialty',
+    name: 'Băng keo chuyên dụng',
+    icon: 'Wrench',
+    description: 'Các loại băng keo xốp, simili, dán nền, điện và nhiều loại chuyên dụng khác.',
+    products: [
+      { id: 'p10', name: 'Băng keo Xốp', category: 'tape-specialty', description: 'Xốp xanh, xốp đỏ (2F4), xốp trắng (2F4, 4F8).', image: img('bangkeoxopxanh.png'), features: ['Xốp xanh', 'Xốp đỏ', 'Xốp trắng'] },
+      { id: 'p11', name: 'Băng keo Simili', category: 'tape-specialty', description: 'Nhiều màu sắc, khổ 3F6 và 4F8.', image: img('bangkeomau1.png'), features: ['Vàng', 'Đỏ', 'Xanh lá', 'Xanh dương'] },
+      { id: 'p12', name: 'Băng keo Dán nền', category: 'tape-specialty', description: 'Vàng và Vàng đen, khổ 4F8 và 7F.', image: img('bangkeodannenvang.png'), features: ['Vàng', 'Vàng đen', 'Khổ 4F8', 'Khổ 7F'] },
+      { id: 'p13', name: 'Băng keo Điện', category: 'tape-specialty', description: 'Hiệu Tô Nga Dũng và Nano.', image: img('bangkeodien-nano.png'), features: ['Tô Nga Dũng', 'Nano', '20 yard', '30 yard'] },
+      { id: 'p13b', name: 'Băng keo che sơn 3M', category: 'tape-specialty', description: 'Nhiều kích cỡ, chuyên dụng sơn.', image: img('bangkeocheson3-5-11.png'), features: ['Nhiều khổ', '3M chính hãng'], isFeatured: true, industryTag: 'Xây dựng' },
+      { id: 'p14', name: 'Băng keo khác', category: 'tape-specialty', description: 'Vải xám, bạc nhôm, lưới thạch cao, nano siêu dính.', image: img('bangkeovai-xanh-xam.png'), features: ['Vải xám', 'Bạc nhôm', 'Lưới thạch cao', 'Nano siêu dính'] },
+    ]
+  },
+  {
+    id: 'packaging',
+    name: 'Vật liệu đóng gói',
+    icon: 'ShieldCheck',
+    description: 'Xốp hơi và màng PE bảo vệ hàng hóa, đa dạng kích thước.',
+    products: [
+      { id: 'p15', name: 'Xốp hơi', category: 'packaging', description: 'Nguyên cây 1m40 hoặc cắt theo yêu cầu.', image: img('xophoinguyencay.png'), features: ['Nguyên cây 1m40', 'Cắt 2', 'Cắt 3', 'Cắt 4', 'Cắt 5', 'Cắt 6', 'Cắt 7'], isFeatured: true, industryTag: 'Logistics' },
+      { id: 'p16', name: 'Màng PE cuộn', category: 'packaging', description: 'Khổ 25cm và 50cm, nhận làm theo yêu cầu.', image: img('manpe-cacloai.png'), features: ['1.5 kg', '2 kg', '2.5 kg', '3 kg'], isFeatured: true, industryTag: 'Logistics' },
+      { id: 'p16b', name: 'Màng PE co nhiệt', category: 'packaging', description: 'Màng PE đa dạng, co nhiệt tốt.', image: img('manpe-2.png'), features: ['Khổ 25cm', 'Khổ 50cm', 'Theo yêu cầu'], isFeatured: true, industryTag: 'Sản xuất' },
+    ]
+  },
+  {
+    id: 'strapping',
+    name: 'Dây đai & Dây rút',
+    icon: 'Cable',
+    description: 'Dây đai PP, PET và dây rút đầy đủ kích thước cho mọi nhu cầu.',
+    products: [
+      { id: 'p17', name: 'Dây đai PP', category: 'strapping', description: 'Nhiều màu sắc: trắng, xanh, vàng.', image: img('daydainhieumau.png'), features: ['Trắng', 'Xanh', 'Vàng'], isFeatured: true, industryTag: 'Logistics' },
+      { id: 'p18', name: 'Dây đai PET', category: 'strapping', description: 'Dây đai PET chịu lực cao.', image: img('daydai-mautuychon.png'), features: ['Xanh', 'Đen'] },
+      { id: 'p19', name: 'Bọ sắt kẹp đai', category: 'strapping', description: 'Phụ kiện kẹp đai chuyên dụng.', image: img('daydai-mautuychon.png'), features: ['Bọ sắt'] },
+      { id: 'p20', name: 'Dây rút', category: 'strapping', description: 'Đầy đủ kích thước từ 100mm đến 450mm.', image: img('dayrut-nhieukichco.png'), features: ['100mm', '150mm', '200mm', '250mm', '300mm', '350mm', '400mm', '450mm'] },
+    ]
+  },
+  {
+    id: 'warning',
+    name: 'Vật liệu Cảnh báo',
+    icon: 'AlertTriangle',
+    description: 'Trụ cảnh báo và cuộn cảnh báo an toàn cho công trình, công trường.',
+    products: [
+      { id: 'p21', name: 'Trụ cảnh báo', category: 'warning', description: 'Nhiều kích thước cho mọi công trường.', image: img('sanphamcanhbao-trucanhbao-cuon-canhbao.png'), features: ['55cm', '65cm', '75cm'] },
+      { id: 'p22', name: 'Cuộn cảnh báo', category: 'warning', description: 'Đa dạng mẫu và mục đích sử dụng.', image: img('sanphamcanhbao-trucanhbao-cuon-canhbao.png'), features: ['Mũi tên', 'Vàng đen', 'Đỏ trắng', 'Cáp nước', 'Cáp điện'] },
+    ]
+  },
+  {
+    id: 'hardware',
+    name: 'Kim khí & Dụng cụ',
+    icon: 'Hammer',
+    description: 'Vít, keo nến, dao cắt keo và các dụng cụ phục vụ xây dựng, sản xuất.',
+    products: [
+      { id: 'p23', name: 'Vít tự khoan đầu dù', category: 'hardware', description: 'Vít chuyên dụng đầu dù.', image: img('vitukhoan.png'), features: ['Tự khoan', 'Đầu dù'], isFeatured: true, industryTag: 'Xây dựng' },
+      { id: 'p24', name: 'Vít bắn ngói', category: 'hardware', description: 'Chuyên dùng cho mái ngói.', image: img('vitgoren.png'), features: ['Bắn ngói'] },
+      { id: 'p25', name: 'Vít bắn tôn', category: 'hardware', description: 'Ron đen, đòn tay gỗ.', image: img('vitbanton.png'), features: ['Ron đen', 'Đòn tay gỗ'] },
+      { id: 'p26', name: 'Vít gỗ ren thưa', category: 'hardware', description: 'Vít chuyên dùng cho gỗ.', image: img('vitgoren.png'), features: ['Ren thưa'] },
+      { id: 'p27', name: 'Vít thạch cao đen', category: 'hardware', description: 'Vít chuyên dùng cho thạch cao.', image: img('vitthanhcaoden.png'), features: ['Thạch cao'] },
+      { id: 'p28', name: 'Vít trắng đầu bằng', category: 'hardware', description: 'Vít đầu bằng, thẩm mỹ cao.', image: img('vitukhoan.png'), features: ['Đầu bằng', 'Trắng'] },
+      { id: 'p29', name: 'Vít inox', category: 'hardware', description: 'Chống gỉ sét, thẩm mỹ.', image: img('vitukhoan.png'), features: ['Inox', 'Chống gỉ'] },
+      { id: 'p30', name: 'Keo nến & Súng bắn keo', category: 'hardware', description: 'Keo nến lớn/nhỏ và súng bắn keo.', image: img('sungbankeo.png'), features: ['Keo nến lớn', 'Keo nến nhỏ', 'Súng bắn keo lớn', 'Súng bắn keo nhỏ'] },
+      { id: 'p31', name: 'Dao cắt keo', category: 'hardware', description: 'Dao cắt keo Dân Hoa và các loại khác.', image: img('daocatkeo.png'), features: ['Dân Hoa 5cm', 'Dân Hoa 7cm', 'Dao để bàn', 'Dao có tay cầm'] },
     ]
   }
 ];
@@ -71,9 +128,9 @@ export const TESTIMONIALS: Testimonial[] = [
 ];
 
 export const AWARDS: Award[] = [
-  { id: 'a1', title: 'Top 100 Thương hiệu Việt Nam', year: '2024', description: 'Vinh danh doanh nghiệp có đóng góp tích cực cho ngành vật tư công nghiệp.', image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=400' },
-  { id: 'a2', title: 'Chứng nhận ISO 9001:2015', year: '2023', description: 'Hệ thống quản lý chất lượng đạt chuẩn quốc tế.', image: 'https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?auto=format&fit=crop&q=80&w=400' },
-  { id: 'a3', title: 'Đối tác Vàng Logistics', year: '2022', description: 'Giải thưởng về giải pháp đóng gói tối ưu cho ngành vận tải.', image: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?auto=format&fit=crop&q=80&w=400' },
+  { id: 'a1', title: 'Chứng nhận Hội viên', year: '2024', description: 'Hội viên CLB Doanh nhân Nam Bình tại TP. Hồ Chí Minh.', image: img('chunghoivien.jpg') },
+  { id: 'a2', title: 'Chứng nhận Hiệp hội SME', year: '2024', description: 'Thành viên Hiệp hội Doanh nghiệp nhỏ và vừa TP.HCM (HCM SME).', image: img('chungnhan-cuahiephoi.jpg') },
+  { id: 'a3', title: 'CLB Doanh nhân 2030', year: '2025', description: 'Hội viên chính thức CLB Doanh nhân 2030 — Ban Chấp hành Saigon Times Club.', image: img('chungnhantruongcaulacbo.jpg') },
 ];
 
 export const PROCESS_STEPS: ProcessStep[] = [

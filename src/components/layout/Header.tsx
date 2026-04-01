@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Phone, Mail, ChevronRight } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import logo from '../../assets/images/Logo-removebg.png';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,34 +20,21 @@ const Header = () => {
     { name: 'Giới thiệu', href: '#about' },
     { name: 'Sản phẩm', href: '#products' },
     { name: 'Năng lực', href: '#capabilities' },
-    { name: 'Đối tác', href: '#partners' },
     { name: 'Liên hệ', href: '#contact' },
   ];
 
   return (
-    <header 
+    <header
       className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
+        isScrolled ? 'bg-white shadow-md py-1' : 'bg-slate-900/30 backdrop-blur-sm py-3'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center">
-            <a href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-brand-dark rounded-lg flex items-center justify-center text-white font-bold text-lg md:text-xl">
-                NKA
-              </div>
-              <div className="flex flex-col">
-                <span className={`font-display font-bold text-lg md:text-xl leading-none ${isScrolled ? 'text-brand-dark' : 'text-white'}`}>
-                  NHÂN KHANG AN
-                </span>
-                <span className={`text-[8px] md:text-[10px] font-medium tracking-widest ${isScrolled ? 'text-slate-500' : 'text-slate-200'}`}>
-                  BẠN THỊNH VƯỢNG - CHÚNG TÔI HẠNH PHÚC
-                </span>
-              </div>
-            </a>
-          </div>
+          <a href="/" className="flex items-center space-x-1">
+            <img src={logo} alt="Nhân Khang An" className={`h-12 md:h-14 w-auto transition-all duration-300 ${isScrolled ? '' : 'brightness-0 invert'}`} />
+          </a>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center space-x-8">
@@ -61,8 +49,8 @@ const Header = () => {
                 {link.name}
               </a>
             ))}
-            <a 
-              href="#contact" 
+            <a
+              href="#contact"
               className="btn-accent px-5 py-2.5 text-sm"
             >
               Tư vấn ngay
@@ -92,15 +80,12 @@ const Header = () => {
             className="fixed inset-0 z-[60] lg:hidden bg-white flex flex-col"
           >
             <div className="p-4 flex justify-between items-center border-b border-slate-100">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-brand-dark rounded-lg flex items-center justify-center text-white font-bold">NKA</div>
-                <span className="font-display font-bold text-brand-dark">NHÂN KHANG AN</span>
-              </div>
+              <img src={logo} alt="Nhân Khang An" className="h-10 w-auto" />
               <button onClick={() => setIsOpen(false)} className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
                 <X size={24} />
               </button>
             </div>
-            <div className="flex-grow overflow-y-auto py-8 px-6 space-y-6">
+            <div className="grow overflow-y-auto py-8 px-6 space-y-6">
               {navLinks.map((link, idx) => (
                 <motion.a
                   key={link.name}

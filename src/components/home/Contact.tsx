@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Phone, Mail, MapPin, Send, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Phone, Mail, MapPin, Send, CheckCircle, Sparkles } from 'lucide-react';
+import { COMPANY_INFO } from '../../constants';
 
 const Contact = () => {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
@@ -8,17 +9,45 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormState('submitting');
-    // Simulate API call
     setTimeout(() => {
       setFormState('success');
     }, 1500);
   };
 
+  const contactItems = [
+    {
+      icon: Phone,
+      title: 'Hotline tư vấn 24/7',
+      content: COMPANY_INFO.phone,
+      sub: 'Hỗ trợ kỹ thuật & báo giá nhanh',
+      highlight: true,
+    },
+    {
+      icon: Mail,
+      title: 'Email bộ phận kinh doanh',
+      content: COMPANY_INFO.email,
+      sub: '',
+      highlight: false,
+    },
+    {
+      icon: MapPin,
+      title: 'Văn phòng & Kho bãi',
+      content: COMPANY_INFO.address,
+      sub: '',
+      highlight: false,
+    },
+  ];
+
   return (
     <section id="contact" className="bg-white">
       <div className="section-container">
         <div className="grid lg:grid-cols-2 gap-16">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h2 className="text-brand-dark text-sm font-bold uppercase tracking-widest mb-3">Liên hệ hợp tác</h2>
             <h3 className="text-3xl md:text-4xl text-slate-900 mb-6 leading-tight">
               Sẵn sàng tối ưu <br />
@@ -28,136 +57,185 @@ const Contact = () => {
               Để lại thông tin, đội ngũ chuyên gia của Nhân Khang An sẽ liên hệ tư vấn giải pháp phù hợp nhất trong vòng 24h.
             </p>
 
-            <div className="space-y-8">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-brand-dark/5 rounded-lg flex items-center justify-center text-brand-dark flex-shrink-0">
-                  <Phone size={24} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900">Hotline tư vấn 24/7</h4>
-                  <p className="text-brand-dark text-xl font-bold">090x.xxx.xxx</p>
-                  <p className="text-slate-500 text-sm">Hỗ trợ kỹ thuật & báo giá nhanh</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-brand-dark/5 rounded-lg flex items-center justify-center text-brand-dark flex-shrink-0">
-                  <Mail size={24} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900">Email bộ phận kinh doanh</h4>
-                  <p className="text-slate-600">contact@nhankhangan.vn</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-brand-dark/5 rounded-lg flex items-center justify-center text-brand-dark flex-shrink-0">
-                  <MapPin size={24} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900">Văn phòng & Kho bãi</h4>
-                  <p className="text-slate-600">Khu công nghiệp VSIP, Bình Dương, Việt Nam</p>
-                </div>
-              </div>
+            <div className="space-y-6">
+              {contactItems.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 + idx * 0.1 }}
+                  whileHover={{ x: 6 }}
+                  className="flex items-start space-x-4 group cursor-default"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-12 h-12 bg-brand-dark/5 rounded-lg flex items-center justify-center text-brand-dark shrink-0 group-hover:bg-brand-dark/10 transition-colors duration-300"
+                  >
+                    <item.icon size={24} />
+                  </motion.div>
+                  <div>
+                    <h4 className="font-bold text-slate-900">{item.title}</h4>
+                    <p className={item.highlight ? 'text-brand-dark text-xl font-bold' : 'text-slate-600'}>{item.content}</p>
+                    {item.sub && <p className="text-slate-500 text-sm">{item.sub}</p>}
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-slate-50 p-8 md:p-10 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-            {formState === 'success' ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="h-full flex flex-col items-center justify-center text-center space-y-6 py-12"
-              >
-                <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
-                  <CheckCircle size={48} />
-                </div>
-                <div>
-                  <h4 className="text-2xl font-bold text-slate-900 mb-2">Gửi yêu cầu thành công!</h4>
-                  <p className="text-slate-600">
-                    Cảm ơn bạn đã quan tâm. Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-slate-50 p-5 sm:p-8 md:p-10 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden"
+          >
+            <AnimatePresence mode="wait">
+              {formState === 'success' ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ type: 'spring', stiffness: 100 }}
+                  className="h-full flex flex-col items-center justify-center text-center space-y-6 py-12"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                    className="relative"
+                  >
+                    <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+                      <CheckCircle size={48} />
+                    </div>
+                    {/* Celebration particles */}
+                    {[...Array(6)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ scale: 0, x: 0, y: 0 }}
+                        animate={{
+                          scale: [0, 1, 0],
+                          x: Math.cos(i * 60 * Math.PI / 180) * 50,
+                          y: Math.sin(i * 60 * Math.PI / 180) * 50,
+                        }}
+                        transition={{ delay: 0.4 + i * 0.05, duration: 0.6 }}
+                        className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full"
+                        style={{ backgroundColor: ['#176bbf', '#67bed9', '#fa2e27', '#22c55e', '#eab308', '#8b5cf6'][i] }}
+                      />
+                    ))}
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <h4 className="text-2xl font-bold text-slate-900 mb-2">Gửi yêu cầu thành công!</h4>
+                    <p className="text-slate-600">
+                      Cảm ơn bạn đã quan tâm. Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.
+                    </p>
+                  </motion.div>
+                  <motion.button
+                    onClick={() => setFormState('idle')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="btn-secondary"
+                  >
+                    Gửi yêu cầu khác
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                >
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700">Họ và tên *</label>
+                      <input
+                        required
+                        type="text"
+                        placeholder="Nguyễn Văn A"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 hover:border-brand-dark/30"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700">Số điện thoại *</label>
+                      <input
+                        required
+                        type="tel"
+                        placeholder="090x xxx xxx"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 hover:border-brand-dark/30"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700">Tên doanh nghiệp</label>
+                    <input
+                      type="text"
+                      placeholder="Công ty TNHH ABC"
+                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 hover:border-brand-dark/30"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700">Nhóm sản phẩm quan tâm</label>
+                    <select className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 bg-white hover:border-brand-dark/30">
+                      <option>Chọn nhóm sản phẩm</option>
+                      <option>Băng keo đóng gói</option>
+                      <option>Băng keo Giấy & Băng keo 2 mặt</option>
+                      <option>Vật liệu Chống dột & Cách nhiệt</option>
+                      <option>Băng keo chuyên dụng</option>
+                      <option>Vật liệu đóng gói (Xốp hơi & Màng PE)</option>
+                      <option>Dây đai & Dây rút</option>
+                      <option>Vật liệu Cảnh báo</option>
+                      <option>Kim khí & Dụng cụ</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700">Nội dung yêu cầu</label>
+                    <textarea
+                      rows={4}
+                      placeholder="Mô tả nhu cầu vật tư của doanh nghiệp bạn..."
+                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 hover:border-brand-dark/30"
+                    ></textarea>
+                  </div>
+
+                  <motion.button
+                    disabled={formState === 'submitting'}
+                    type="submit"
+                    whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(250,46,39,0.3)' }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full btn-accent py-4 text-lg font-bold flex items-center justify-center space-x-2"
+                  >
+                    {formState === 'submitting' ? (
+                      <motion.span
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        className="w-6 h-6 border-2 border-white border-t-transparent rounded-full inline-block"
+                      ></motion.span>
+                    ) : (
+                      <>
+                        <Sparkles size={20} />
+                        <span>Nhận tư vấn giải pháp ngay</span>
+                        <Send size={20} />
+                      </>
+                    )}
+                  </motion.button>
+                  <p className="text-center text-xs text-slate-500 italic">
+                    * Chúng tôi cam kết bảo mật thông tin doanh nghiệp của bạn.
                   </p>
-                </div>
-                <button 
-                  onClick={() => setFormState('idle')}
-                  className="btn-secondary"
-                >
-                  Gửi yêu cầu khác
-                </button>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700">Họ và tên *</label>
-                    <input 
-                      required
-                      type="text" 
-                      placeholder="Nguyễn Văn A"
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700">Số điện thoại *</label>
-                    <input 
-                      required
-                      type="tel" 
-                      placeholder="090x xxx xxx"
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700">Tên doanh nghiệp</label>
-                  <input 
-                    type="text" 
-                    placeholder="Công ty TNHH ABC"
-                    className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700">Nhóm sản phẩm quan tâm</label>
-                  <select className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all bg-white">
-                    <option>Chọn nhóm sản phẩm</option>
-                    <option>Keo & Vật liệu đóng gói</option>
-                    <option>Dây đai - Vật tư cố định</option>
-                    <option>Vít - Kim khí</option>
-                    <option>Màng PE - Xốp bảo vệ</option>
-                    <option>Vật liệu chống dột - thấm</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700">Nội dung yêu cầu</label>
-                  <textarea 
-                    rows={4}
-                    placeholder="Mô tả nhu cầu vật tư của doanh nghiệp bạn..."
-                    className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all"
-                  ></textarea>
-                </div>
-
-                <button 
-                  disabled={formState === 'submitting'}
-                  type="submit" 
-                  className="w-full btn-accent py-4 text-lg font-bold flex items-center justify-center space-x-2"
-                >
-                  {formState === 'submitting' ? (
-                    <span className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                  ) : (
-                    <>
-                      <span>Nhận tư vấn giải pháp ngay</span>
-                      <Send size={20} />
-                    </>
-                  )}
-                </button>
-                <p className="text-center text-xs text-slate-500 italic">
-                  * Chúng tôi cam kết bảo mật thông tin doanh nghiệp của bạn.
-                </p>
-              </form>
-            )}
-          </div>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </div>
       </div>
     </section>

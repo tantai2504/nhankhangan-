@@ -38,7 +38,9 @@ const AIChatbot = () => {
             role: "user",
             parts: [{ text: `Bạn là trợ lý AI chuyên nghiệp của công ty Nhân Khang An (NKA). 
             Slogan: "Bạn thịnh vượng - Chúng tôi hạnh phúc".
-            Lĩnh vực: Cung cấp vật tư công nghiệp (Keo, Dây đai, Vít, Màng PE, Chống thấm).
+            Lĩnh vực: Cung cấp vật tư công nghiệp (Băng keo đóng gói, Băng keo giấy & 2 mặt, Chống dột & Cách nhiệt, Băng keo chuyên dụng, Xốp hơi & Màng PE, Dây đai & Dây rút, Vật liệu cảnh báo, Kim khí & Dụng cụ).
+            SĐT liên hệ: 0944 27 27 26. Địa chỉ: Đường QL13, Khu phố 1, Phường Thành Tâm, TX Chơn Thành, Bình Phước. Email: dovudinhchi@gmail.com.
+            Đặc điểm: Sản xuất trực tiếp, không qua trung gian, giá gốc tại xưởng. Nhận gia công theo yêu cầu (kích thước, độ dày, in logo). Giao hàng toàn quốc.
             Phong cách: Chuyên nghiệp, tận tâm, tập trung giải pháp B2B.
             Nhiệm vụ: Tư vấn giải pháp, KHÔNG BÁN HÀNG TRỰC TIẾP. Gợi ý khách hàng để lại thông tin để chuyên gia liên hệ.
             
@@ -59,7 +61,7 @@ const AIChatbot = () => {
       }
     } catch (error) {
       console.error("Chatbot Error:", error);
-      setMessages(prev => [...prev, { role: 'bot', text: "Tôi đang bận một chút, Anh/Chị có thể gọi hotline 090x.xxx.xxx để được hỗ trợ ngay lập tức ạ!" }]);
+      setMessages(prev => [...prev, { role: 'bot', text: "Tôi đang bận một chút, Anh/Chị có thể gọi hotline 0944 27 27 26 để được hỗ trợ ngay lập tức ạ!" }]);
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +74,7 @@ const AIChatbot = () => {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100]">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[100]">
       <AnimatePresence>
         {isOpen && (
           <motion.div

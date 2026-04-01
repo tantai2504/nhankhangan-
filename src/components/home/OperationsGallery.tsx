@@ -1,82 +1,134 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { Camera, Truck, Factory, Warehouse, ShieldCheck } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useInView } from 'motion/react';
+import { Camera, Truck, Warehouse, ShieldCheck } from 'lucide-react';
+import imgWarehouse from '../../assets/images/hinhanhlohang-bangkeo.jpg';
+import imgLogistics from '../../assets/images/anh-xe-vanchuyen-lohang.jpg';
+import imgProduction from '../../assets/images/anh-nhanvien-dang-sanxuat.jpg';
+import imgQuality from '../../assets/images/anh-nhavien-sanxuat-bangkeo.jpg';
+
+const CountUp = ({ end, suffix = '' }: { end: number | string; suffix?: string }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true });
+  const [display, setDisplay] = useState('0');
+
+  useEffect(() => {
+    if (!isInView) return;
+    if (typeof end === 'string') { setDisplay(end); return; }
+    let start = 0;
+    const increment = end / 120;
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setDisplay(end.toLocaleString());
+        clearInterval(timer);
+      } else {
+        setDisplay(Math.floor(start).toLocaleString());
+      }
+    }, 1000 / 60);
+    return () => clearInterval(timer);
+  }, [isInView, end]);
+
+  return <span ref={ref}>{display}{suffix}</span>;
+};
 
 const OperationsGallery = () => {
   const images = [
-    { url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800', title: 'Kho bãi hiện đại', category: 'Warehouse' },
-    { url: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&q=80&w=800', title: 'Vận chuyển chuyên nghiệp', category: 'Logistics' },
-    { url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800', title: 'Quy trình đóng gói', category: 'Production' },
-    { url: 'https://images.unsplash.com/photo-1565891741441-64926e441838?auto=format&fit=crop&q=80&w=800', title: 'Kiểm định chất lượng', category: 'Quality' },
+    { url: imgWarehouse, title: 'Kho bãi hiện đại', category: 'Kho bãi' },
+    { url: imgLogistics, title: 'Vận chuyển chuyên nghiệp', category: 'Vận chuyển' },
+    { url: imgProduction, title: 'Quy trình sản xuất', category: 'Sản xuất' },
+    { url: imgQuality, title: 'Kiểm định chất lượng', category: 'Chất lượng' },
+  ];
+
+  const stats = [
+    { icon: Warehouse, value: 5000, suffix: 'm²', label: 'Diện tích kho bãi' },
+    { icon: Truck, value: '24h' as const, suffix: '', label: 'Thời gian giao hàng nội vùng' },
+    { icon: ShieldCheck, value: 100, suffix: '%', label: 'Sản phẩm được kiểm định' },
   ];
 
   return (
-    <section className="bg-white py-24">
+    <section className="bg-white py-16">
       <div className="section-container">
-        <div className="grid lg:grid-cols-2 gap-12 items-end mb-16">
-          <div>
+        <div className="grid lg:grid-cols-2 gap-12 items-end mb-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
             <h2 className="text-brand-dark text-sm font-bold uppercase tracking-widest mb-3">Hình ảnh vận hành</h2>
             <h3 className="text-3xl md:text-4xl text-slate-900 mb-6 leading-tight">
               Quy mô & Năng lực <br />
               <span className="text-brand-dark">thực tế tại Nhân Khang An</span>
             </h3>
-          </div>
-          <p className="text-slate-600 max-w-md">
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-slate-600 max-w-md"
+          >
             Chúng tôi minh bạch mọi quy trình từ nhập kho, kiểm định đến vận chuyển tận tay doanh nghiệp, đảm bảo sự an tâm tuyệt đối.
-          </p>
+          </motion.p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {images.map((img, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="group relative h-80 rounded-2xl overflow-hidden shadow-lg"
+              transition={{ delay: idx * 0.12, type: 'spring', stiffness: 80 }}
+              whileHover={{ y: -6 }}
+              className="group relative h-80 rounded-2xl overflow-hidden shadow-lg cursor-pointer"
             >
-              <img 
-                src={img.url} 
-                alt={img.title} 
+              <img
+                src={img.url}
+                alt={img.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity"></div>
-              
-              <div className="absolute bottom-0 left-0 w-full p-6 text-white transform translate-y-2 group-hover:translate-y-0 transition-transform">
+
+              <div className="absolute bottom-0 left-0 w-full p-6 text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                 <div className="flex items-center space-x-2 text-brand-light text-[10px] font-bold uppercase tracking-widest mb-2">
                   <Camera size={14} />
                   <span>{img.category}</span>
                 </div>
                 <h4 className="text-lg font-bold">{img.title}</h4>
               </div>
+
+              {/* Hover shimmer effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer pointer-events-none"></div>
             </motion.div>
           ))}
         </div>
 
-        <div className="mt-16 grid md:grid-cols-3 gap-8">
-          <div className="flex items-center space-x-4 p-6 bg-slate-50 rounded-xl">
-            <Warehouse className="text-brand-dark" size={32} />
-            <div>
-              <p className="font-bold text-slate-900">5,000m²</p>
-              <p className="text-xs text-slate-500">Diện tích kho bãi</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4 p-6 bg-slate-50 rounded-xl">
-            <Truck className="text-brand-dark" size={32} />
-            <div>
-              <p className="font-bold text-slate-900">24h</p>
-              <p className="text-xs text-slate-500">Thời gian giao hàng nội vùng</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4 p-6 bg-slate-50 rounded-xl">
-            <ShieldCheck className="text-brand-dark" size={32} />
-            <div>
-              <p className="font-bold text-slate-900">100%</p>
-              <p className="text-xs text-slate-500">Sản phẩm được kiểm định</p>
-            </div>
-          </div>
+        <div className="mt-10 grid md:grid-cols-3 gap-6">
+          {stats.map((stat, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 + idx * 0.1 }}
+              whileHover={{ scale: 1.03, boxShadow: '0 10px 30px rgba(23,107,191,0.1)' }}
+              className="flex items-center space-x-4 p-6 bg-slate-50 rounded-xl transition-all duration-300"
+            >
+              <motion.div whileHover={{ rotate: 12 }}>
+                <stat.icon className="text-brand-dark" size={32} />
+              </motion.div>
+              <div>
+                <p className="font-bold text-slate-900">
+                  {typeof stat.value === 'number' ? (
+                    <CountUp end={stat.value} suffix={stat.suffix} />
+                  ) : (
+                    stat.value
+                  )}
+                </p>
+                <p className="text-xs text-slate-500">{stat.label}</p>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
