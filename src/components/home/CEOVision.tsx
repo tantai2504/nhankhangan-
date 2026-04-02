@@ -23,8 +23,8 @@ const CEOVision = () => {
               />
             </div>
             {/* Decorative accent */}
-            <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-brand-light/20 rounded-full blur-2xl animate-float-slow"></div>
-            <div className="absolute -top-4 -right-4 w-16 h-16 bg-brand-red/15 rounded-full blur-xl animate-float-delay"></div>
+            <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-brand-light/20 rounded-full blur-2xl"></div>
+            <div className="absolute -top-4 -right-4 w-16 h-16 bg-brand-red/15 rounded-full blur-xl"></div>
           </motion.div>
 
           <motion.div

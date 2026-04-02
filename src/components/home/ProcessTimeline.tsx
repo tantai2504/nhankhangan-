@@ -6,18 +6,10 @@ import * as Icons from 'lucide-react';
 const ProcessTimeline = () => {
   return (
     <section className="bg-slate-900 py-16 relative overflow-hidden">
-      {/* Animated background elements */}
+      {/* Static background glow */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-        <motion.div
-          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-light rounded-full blur-[120px]"
-        ></motion.div>
-        <motion.div
-          animate={{ x: [0, -20, 0], y: [0, 30, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-red rounded-full blur-[120px]"
-        ></motion.div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-light rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-red rounded-full blur-3xl"></div>
       </div>
 
       <div className="section-container relative z-10">
@@ -53,7 +45,7 @@ const ProcessTimeline = () => {
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: idx * 0.15, type: 'spring', stiffness: 80 }}
+                  transition={{ delay: idx * 0.08, type: 'spring', stiffness: 80 }}
                   className="relative group"
                 >
                   <motion.div
@@ -64,19 +56,15 @@ const ProcessTimeline = () => {
                       initial={{ scale: 0 }}
                       whileInView={{ scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: idx * 0.15 + 0.2, type: 'spring', stiffness: 200 }}
+                      transition={{ delay: idx * 0.08 + 0.15, type: 'spring', stiffness: 200 }}
                       className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-dark text-white text-[10px] font-bold px-3 py-1 rounded-full border border-white/20 whitespace-nowrap"
                     >
                       BƯỚC {step.number}
                     </motion.div>
 
-                    <motion.div
-                      whileHover={{ rotate: [0, -10, 10, 0], scale: 1.15 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-14 h-14 md:w-16 md:h-16 bg-brand-dark/20 rounded-full flex items-center justify-center text-brand-light mb-6 group-hover:bg-brand-light/20 transition-colors duration-300 border border-brand-light/20"
-                    >
+                    <div className="w-14 h-14 md:w-16 md:h-16 bg-brand-dark/20 rounded-full flex items-center justify-center text-brand-light mb-6 group-hover:bg-brand-light/20 group-hover:scale-110 transition-all duration-300 border border-brand-light/20">
                       {IconComponent && <IconComponent size={28} />}
-                    </motion.div>
+                    </div>
 
                     <h4 className="text-lg md:text-xl font-bold text-white mb-4">{step.title}</h4>
                     <p className="text-slate-400 text-xs md:text-sm leading-relaxed">
@@ -93,7 +81,7 @@ const ProcessTimeline = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.8 }}
+          transition={{ delay: 0.4 }}
           className="mt-12 text-center"
         >
           <motion.a

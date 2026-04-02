@@ -1,12 +1,48 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, X, Send, Bot, User, Loader2, ChevronDown, Phone, Building2, PackageSearch } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, Loader2, ChevronDown, Phone, Building2, PackageSearch, Scissors } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
+import { CATEGORIES, COMPANY_INFO } from '../../constants';
+
+// Build product knowledge base from constants
+const buildProductKB = () => {
+  return CATEGORIES.map(cat => {
+    const products = cat.products.map(p =>
+      `  - ${p.name}: ${p.description} Quy cách: ${p.features.join(', ')}.`
+    ).join('\n');
+    return `【${cat.name}】\n${products}`;
+  }).join('\n\n');
+};
+
+const SYSTEM_PROMPT = `Bạn là trợ lý tư vấn AI của ${COMPANY_INFO.name} (viết tắt: NKA).
+Slogan: "${COMPANY_INFO.slogan}"
+
+═══ THÔNG TIN CÔNG TY ═══
+• Loại hình: Sản xuất trực tiếp băng keo và màng PE — KHÔNG qua trung gian, giá gốc tại xưởng.
+• Nhận gia công theo yêu cầu: kích thước, độ dày, in logo thương hiệu.
+• Giao hàng toàn quốc, linh hoạt từ đơn nhỏ đến số lượng lớn.
+• Nguyên liệu chất lượng cao, thân thiện môi trường.
+• Người sáng lập: Mr. Đỗ Đình Chí — 10+ năm kinh nghiệm.
+• Địa chỉ: ${COMPANY_INFO.address}
+• SĐT: ${COMPANY_INFO.phone}
+• Email: ${COMPANY_INFO.email}
+
+═══ DANH MỤC SẢN PHẨM CHI TIẾT ═══
+${buildProductKB()}
+
+═══ QUY TẮC TRẢ LỜI ═══
+1. Trả lời bằng tiếng Việt, ngắn gọn (tối đa 3-4 câu), thân thiện nhưng chuyên nghiệp.
+2. Khi khách hỏi về sản phẩm → tra cứu danh mục ở trên và trả lời chính xác quy cách, loại.
+3. Khi khách hỏi giá → giải thích NKA sản xuất trực tiếp nên giá cạnh tranh, nhưng cần tư vấn cụ thể theo số lượng. Gợi ý gọi ${COMPANY_INFO.phone} hoặc để lại thông tin.
+4. Khi khách hỏi gia công/in logo → xác nhận NKA nhận gia công theo yêu cầu (kích thước, độ dày, in logo).
+5. Luôn khéo léo gợi ý khách để lại SĐT hoặc gọi hotline để được tư vấn chi tiết hơn.
+6. KHÔNG bịa sản phẩm không có trong danh mục. Nếu không chắc, nói "để em chuyển câu hỏi cho bộ phận chuyên môn".
+7. Xưng "em" gọi khách "Anh/Chị".`;
 
 const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'bot', text: string }[]>([
-    { role: 'bot', text: 'Chào Anh/Chị! Nhân Khang An có thể hỗ trợ gì cho doanh nghiệp của mình hôm nay ạ?' }
+    { role: 'bot', text: 'Chào Anh/Chị! Em là trợ lý tư vấn của Nhân Khang An. Anh/Chị cần tìm hiểu về sản phẩm nào ạ? 😊' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +57,16 @@ const AIChatbot = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Build conversation history for context
+  const buildChatHistory = (userMessage: string) => {
+    const history = messages.slice(-8).map(m => ({
+      role: m.role === 'user' ? 'user' as const : 'model' as const,
+      parts: [{ text: m.text }]
+    }));
+    history.push({ role: 'user', parts: [{ text: userMessage }] });
+    return history;
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -32,45 +78,34 @@ const AIChatbot = () => {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: `Bạn là trợ lý AI chuyên nghiệp của công ty Nhân Khang An (NKA). 
-            Slogan: "Bạn thịnh vượng - Chúng tôi hạnh phúc".
-            Lĩnh vực: Cung cấp vật tư công nghiệp (Băng keo đóng gói, Băng keo giấy & 2 mặt, Chống dột & Cách nhiệt, Băng keo chuyên dụng, Xốp hơi & Màng PE, Dây đai & Dây rút, Vật liệu cảnh báo, Kim khí & Dụng cụ).
-            SĐT liên hệ: 0944 27 27 26. Địa chỉ: Đường QL13, Khu phố 1, Phường Thành Tâm, TX Chơn Thành, Bình Phước. Email: dovudinhchi@gmail.com.
-            Đặc điểm: Sản xuất trực tiếp, không qua trung gian, giá gốc tại xưởng. Nhận gia công theo yêu cầu (kích thước, độ dày, in logo). Giao hàng toàn quốc.
-            Phong cách: Chuyên nghiệp, tận tâm, tập trung giải pháp B2B.
-            Nhiệm vụ: Tư vấn giải pháp, KHÔNG BÁN HÀNG TRỰC TIẾP. Gợi ý khách hàng để lại thông tin để chuyên gia liên hệ.
-            
-            Câu hỏi của khách hàng: ${userMessage}` }]
-          }
-        ],
+        model: "gemini-2.0-flash",
+        contents: buildChatHistory(userMessage),
         config: {
-          systemInstruction: "Hãy trả lời ngắn gọn, chuyên nghiệp bằng tiếng Việt. Nếu khách hàng hỏi về giá, hãy giải thích rằng NKA cung cấp giải pháp tùy chỉnh theo quy mô doanh nghiệp nên cần tư vấn trực tiếp để có giá tốt nhất."
+          systemInstruction: SYSTEM_PROMPT,
+          temperature: 0.7,
+          maxOutputTokens: 300,
         }
       });
 
-      const botResponse = response.text || "Xin lỗi, tôi gặp chút trục trặc. Anh/Chị vui lòng để lại số điện thoại để chúng tôi gọi lại tư vấn nhé!";
+      const botResponse = response.text || "Xin lỗi, em gặp chút trục trặc. Anh/Chị vui lòng gọi hotline " + COMPANY_INFO.phone + " để được hỗ trợ ngay ạ!";
       setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
 
-      // Logic to trigger lead form after 3 messages
       if (messages.length >= 4 && !showLeadForm) {
         setTimeout(() => setShowLeadForm(true), 1000);
       }
     } catch (error) {
       console.error("Chatbot Error:", error);
-      setMessages(prev => [...prev, { role: 'bot', text: "Tôi đang bận một chút, Anh/Chị có thể gọi hotline 0944 27 27 26 để được hỗ trợ ngay lập tức ạ!" }]);
+      setMessages(prev => [...prev, { role: 'bot', text: `Em đang bận một chút, Anh/Chị có thể gọi hotline ${COMPANY_INFO.phone} để được hỗ trợ ngay lập tức ạ!` }]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const quickActions = [
-    { label: 'Tư vấn Logistics', icon: PackageSearch },
-    { label: 'Giải pháp Xây dựng', icon: Building2 },
-    { label: 'Báo giá doanh nghiệp', icon: Phone },
+    { label: 'Băng keo đóng gói', icon: PackageSearch },
+    { label: 'Gia công in logo', icon: Scissors },
+    { label: 'Chống dột & cách nhiệt', icon: Building2 },
+    { label: 'Báo giá số lượng lớn', icon: Phone },
   ];
 
   return (
@@ -90,7 +125,7 @@ const AIChatbot = () => {
                   <Bot size={24} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm">AI Assistant NKA</h4>
+                  <h4 className="font-bold text-sm">Tư vấn Nhân Khang An</h4>
                   <p className="text-[10px] text-brand-light flex items-center">
                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full mr-1 animate-pulse"></span>
                     Đang trực tuyến
@@ -103,12 +138,12 @@ const AIChatbot = () => {
             </div>
 
             {/* Messages */}
-            <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-slate-50">
+            <div className="grow overflow-y-auto p-4 space-y-4 bg-slate-50">
               {messages.map((msg, idx) => (
                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
-                    msg.role === 'user' 
-                    ? 'bg-brand-dark text-white rounded-tr-none' 
+                  <div className={`max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-line ${
+                    msg.role === 'user'
+                    ? 'bg-brand-dark text-white rounded-tr-none'
                     : 'bg-white text-slate-700 shadow-sm border border-slate-100 rounded-tl-none'
                   }`}>
                     {msg.text}
@@ -117,19 +152,21 @@ const AIChatbot = () => {
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 rounded-tl-none">
-                    <Loader2 size={16} className="animate-spin text-brand-dark" />
+                  <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 rounded-tl-none flex items-center space-x-1">
+                    <span className="w-2 h-2 bg-brand-dark/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                    <span className="w-2 h-2 bg-brand-dark/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                    <span className="w-2 h-2 bg-brand-dark/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                   </div>
                 </div>
               )}
-              
+
               {showLeadForm && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-brand-light/10 border border-brand-light/30 p-4 rounded-xl space-y-3"
                 >
-                  <p className="text-xs font-bold text-brand-dark">Để lại thông tin để nhận giải pháp chi tiết:</p>
+                  <p className="text-xs font-bold text-brand-dark">Để lại thông tin để nhận báo giá chi tiết:</p>
                   <input type="text" placeholder="Tên của bạn" className="w-full text-xs p-2 rounded border border-slate-200 outline-none focus:border-brand-dark" />
                   <input type="tel" placeholder="Số điện thoại" className="w-full text-xs p-2 rounded border border-slate-200 outline-none focus:border-brand-dark" />
                   <button className="w-full bg-brand-dark text-white text-xs font-bold py-2 rounded hover:bg-blue-700 transition-colors">Gửi thông tin</button>
@@ -140,14 +177,12 @@ const AIChatbot = () => {
 
             {/* Quick Actions */}
             {!isLoading && messages.length < 3 && (
-              <div className="px-4 py-2 flex flex-wrap gap-2 bg-slate-50">
+              <div className="px-3 py-2 flex flex-wrap gap-1.5 bg-slate-50 border-t border-slate-100">
                 {quickActions.map((action, idx) => (
-                  <button 
+                  <button
                     key={idx}
-                    onClick={() => {
-                      setInput(action.label);
-                    }}
-                    className="text-[10px] font-bold bg-white border border-slate-200 px-2 py-1 rounded-full text-slate-600 hover:border-brand-dark hover:text-brand-dark transition-all flex items-center"
+                    onClick={() => { setInput(action.label); }}
+                    className="text-[10px] font-bold bg-white border border-slate-200 px-2.5 py-1.5 rounded-full text-slate-600 hover:border-brand-dark hover:text-brand-dark transition-all flex items-center"
                   >
                     <action.icon size={12} className="mr-1" />
                     {action.label}
@@ -157,16 +192,16 @@ const AIChatbot = () => {
             )}
 
             {/* Input */}
-            <div className="p-4 bg-white border-t border-slate-100 flex items-center space-x-2">
+            <div className="p-3 bg-white border-t border-slate-100 flex items-center space-x-2">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Nhập tin nhắn..."
-                className="flex-grow text-sm outline-none"
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Hỏi về sản phẩm, giá, gia công..."
+                className="grow text-sm outline-none"
               />
-              <button 
+              <button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
                 className="text-brand-dark hover:text-brand-red disabled:text-slate-300 transition-colors"
@@ -189,11 +224,10 @@ const AIChatbot = () => {
         {!isOpen && (
           <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-dark border-2 border-white rounded-full"></span>
         )}
-        
-        {/* Tooltip */}
+
         {!isOpen && (
           <div className="absolute right-full mr-4 bg-white text-slate-900 px-4 py-2 rounded-lg shadow-xl text-sm font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-slate-100">
-            Tư vấn giải pháp AI
+            Tư vấn sản phẩm
           </div>
         )}
       </motion.button>

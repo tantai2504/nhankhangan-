@@ -4,9 +4,12 @@ import * as Icons from 'lucide-react';
 import { CATEGORIES } from '../../constants';
 
 const ProductCategories = () => {
-  const featuredProducts = CATEGORIES.flatMap(cat => cat.products).filter(p => p.isFeatured);
+  const allProducts = CATEGORIES.flatMap(cat => cat.products);
+  const row1Products = allProducts.filter(p => p.isFeatured);
+  const row2Products = allProducts.filter(p => !p.isFeatured);
   // Duplicate for seamless loop
-  const marqueeItems = [...featuredProducts, ...featuredProducts];
+  const marqueeRow1 = [...row1Products, ...row1Products];
+  const marqueeRow2 = [...row2Products, ...row2Products];
 
   return (
     <section id="products" className="bg-slate-50 overflow-hidden">
@@ -32,9 +35,9 @@ const ProductCategories = () => {
         <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
         <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
 
-        {/* Row 1 - scroll left */}
+        {/* Row 1 - featured products, scroll left */}
         <div className="flex animate-marquee hover:[animation-play-state:paused] mb-4">
-          {marqueeItems.map((product, idx) => (
+          {marqueeRow1.map((product, idx) => (
             <div
               key={`r1-${idx}`}
               className="shrink-0 w-[260px] mx-2 group bg-white rounded-xl overflow-hidden border border-slate-100 hover:border-brand-dark/20 hover:shadow-xl transition-all duration-300"
@@ -66,9 +69,9 @@ const ProductCategories = () => {
           ))}
         </div>
 
-        {/* Row 2 - scroll right (reverse) */}
+        {/* Row 2 - other products, scroll right */}
         <div className="flex animate-marquee-reverse hover:[animation-play-state:paused]">
-          {[...marqueeItems].reverse().map((product, idx) => (
+          {marqueeRow2.map((product, idx) => (
             <div
               key={`r2-${idx}`}
               className="shrink-0 w-[260px] mx-2 group bg-white rounded-xl overflow-hidden border border-slate-100 hover:border-brand-dark/20 hover:shadow-xl transition-all duration-300"
