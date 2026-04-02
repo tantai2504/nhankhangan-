@@ -8,7 +8,7 @@ const AwardsCarousel = () => {
   const selectedAward = AWARDS.find(a => a.id === selected);
 
   return (
-    <section className="bg-slate-50 py-16">
+    <section className="bg-brand-bg">
       <div className="section-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

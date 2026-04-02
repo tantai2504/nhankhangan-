@@ -5,12 +5,19 @@ import { COMPANY_INFO } from '../../constants';
 
 const Contact = () => {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [form, setForm] = useState({ name: '', phone: '', company: '', productGroup: '', message: '' });
+
+  const updateField = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.name.trim() || !form.phone.trim()) return;
     setFormState('submitting');
+    // TODO: Replace with actual API call
+    console.log('Contact form submitted:', form);
     setTimeout(() => {
       setFormState('success');
+      setForm({ name: '', phone: '', company: '', productGroup: '', message: '' });
     }, 1500);
   };
 
@@ -53,7 +60,7 @@ const Contact = () => {
               Sẵn sàng tối ưu <br />
               <span className="text-brand-dark">vật tư cho doanh nghiệp của bạn</span>
             </h3>
-            <p className="text-slate-600 text-lg mb-10">
+            <p className="text-slate-600 text-sm sm:text-base mb-10">
               Để lại thông tin, đội ngũ chuyên gia của Nhân Khang An sẽ liên hệ tư vấn giải pháp phù hợp nhất trong vòng 24h.
             </p>
 
@@ -160,6 +167,8 @@ const Contact = () => {
                       <input
                         required
                         type="text"
+                        value={form.name}
+                        onChange={e => updateField('name', e.target.value)}
                         placeholder="Nguyễn Văn A"
                         className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 hover:border-brand-dark/30"
                       />
@@ -169,6 +178,8 @@ const Contact = () => {
                       <input
                         required
                         type="tel"
+                        value={form.phone}
+                        onChange={e => updateField('phone', e.target.value)}
                         placeholder="090x xxx xxx"
                         className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 hover:border-brand-dark/30"
                       />
@@ -179,6 +190,8 @@ const Contact = () => {
                     <label className="text-sm font-bold text-slate-700">Tên doanh nghiệp</label>
                     <input
                       type="text"
+                      value={form.company}
+                      onChange={e => updateField('company', e.target.value)}
                       placeholder="Công ty TNHH ABC"
                       className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 hover:border-brand-dark/30"
                     />
@@ -186,7 +199,7 @@ const Contact = () => {
 
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-slate-700">Nhóm sản phẩm quan tâm</label>
-                    <select className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 bg-white hover:border-brand-dark/30">
+                    <select value={form.productGroup} onChange={e => updateField('productGroup', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 bg-white hover:border-brand-dark/30">
                       <option>Chọn nhóm sản phẩm</option>
                       <option>Băng keo đóng gói</option>
                       <option>Băng keo Giấy & Băng keo 2 mặt</option>
@@ -203,6 +216,8 @@ const Contact = () => {
                     <label className="text-sm font-bold text-slate-700">Nội dung yêu cầu</label>
                     <textarea
                       rows={4}
+                      value={form.message}
+                      onChange={e => updateField('message', e.target.value)}
                       placeholder="Mô tả nhu cầu vật tư của doanh nghiệp bạn..."
                       className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-dark focus:border-transparent outline-none transition-all duration-300 hover:border-brand-dark/30"
                     ></textarea>

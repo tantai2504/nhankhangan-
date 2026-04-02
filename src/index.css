@@ -3,6 +3,7 @@
 @theme {
   --color-brand-dark: #1259a3;
   --color-brand-light: #4daac8;
+  --color-brand-bg: #e0f2f7;
   --color-brand-red: #e8231c;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -15,7 +16,7 @@
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden;
+    @apply bg-brand-bg text-slate-900 font-sans antialiased overflow-x-hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-bold tracking-tight;
@@ -101,13 +102,5 @@
 }
 .animate-slide-up-fade { animation: slide-up-fade 0.6s ease-out forwards; }
 .animate-draw-line { animation: draw-line 1.5s ease-out forwards; }
-.animate-marquee {
-  animation: marquee 30s linear infinite;
-  will-change: transform;
-  transform: translateZ(0);
-}
-.animate-marquee-reverse {
-  animation: marquee-reverse 30s linear infinite;
-  will-change: transform;
-  transform: translateZ(0);
-}
+.animate-marquee { animation: marquee 30s linear infinite; }
+.animate-marquee-reverse { animation: marquee-reverse 30s linear infinite; }

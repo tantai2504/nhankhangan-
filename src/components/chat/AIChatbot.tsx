@@ -47,6 +47,9 @@ const AIChatbot = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showLeadForm, setShowLeadForm] = useState(false);
+  const [leadName, setLeadName] = useState('');
+  const [leadPhone, setLeadPhone] = useState('');
+  const [leadSent, setLeadSent] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -160,16 +163,30 @@ const AIChatbot = () => {
                 </div>
               )}
 
-              {showLeadForm && (
+              {showLeadForm && !leadSent && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-brand-light/10 border border-brand-light/30 p-4 rounded-xl space-y-3"
                 >
                   <p className="text-xs font-bold text-brand-dark">Để lại thông tin để nhận báo giá chi tiết:</p>
-                  <input type="text" placeholder="Tên của bạn" className="w-full text-xs p-2 rounded border border-slate-200 outline-none focus:border-brand-dark" />
-                  <input type="tel" placeholder="Số điện thoại" className="w-full text-xs p-2 rounded border border-slate-200 outline-none focus:border-brand-dark" />
-                  <button className="w-full bg-brand-dark text-white text-xs font-bold py-2 rounded hover:bg-blue-700 transition-colors">Gửi thông tin</button>
+                  <input type="text" placeholder="Tên của bạn" value={leadName} onChange={e => setLeadName(e.target.value)} className="w-full text-xs p-2 rounded border border-slate-200 outline-none focus:border-brand-dark" />
+                  <input type="tel" placeholder="Số điện thoại" value={leadPhone} onChange={e => setLeadPhone(e.target.value)} className="w-full text-xs p-2 rounded border border-slate-200 outline-none focus:border-brand-dark" />
+                  <button
+                    disabled={!leadName.trim() || !leadPhone.trim()}
+                    onClick={() => {
+                      setLeadSent(true);
+                      setMessages(prev => [...prev, { role: 'bot', text: `Cảm ơn ${leadName}! Em đã ghi nhận SĐT ${leadPhone}. Bộ phận kinh doanh sẽ liên hệ Anh/Chị trong thời gian sớm nhất ạ.` }]);
+                    }}
+                    className="w-full bg-brand-dark text-white text-xs font-bold py-2 rounded hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Gửi thông tin
+                  </button>
+                </motion.div>
+              )}
+              {leadSent && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-green-50 border border-green-200 p-3 rounded-xl text-center">
+                  <p className="text-xs text-green-700 font-bold">Đã gửi thông tin thành công!</p>
                 </motion.div>
               )}
               <div ref={messagesEndRef} />

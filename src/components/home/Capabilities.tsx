@@ -37,8 +37,8 @@ const Capabilities = () => {
         <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
       </div>
       {/* Floating glow orbs */}
-      <div className="absolute top-10 right-0 md:top-20 md:right-20 w-40 md:w-64 h-40 md:h-64 bg-brand-light/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-10 left-0 md:bottom-20 md:left-20 w-32 md:w-48 h-32 md:h-48 bg-brand-red/10 rounded-full blur-3xl"></div>
+      <div className="absolute top-10 right-0 md:top-20 md:right-20 w-40 md:w-64 h-40 md:h-64 bg-brand-light/10 rounded-full blur-[100px] animate-float"></div>
+      <div className="absolute bottom-10 left-0 md:bottom-20 md:left-20 w-32 md:w-48 h-32 md:h-48 bg-brand-red/10 rounded-full blur-[80px] animate-float-delay"></div>
 
       <div className="section-container relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -146,9 +146,17 @@ const Capabilities = () => {
               </div>
             </motion.div>
 
-            {/* Decorative circles */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-white/5 rounded-full pointer-events-none"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-white/5 rounded-full pointer-events-none"></div>
+            {/* Animated decorative circles */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-white/5 rounded-full pointer-events-none"
+            ></motion.div>
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-white/5 rounded-full pointer-events-none"
+            ></motion.div>
           </div>
         </div>
       </div>
