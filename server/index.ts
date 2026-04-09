@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import dotenv from 'dotenv';
 import { testConnection } from './db';
 import { login, changePassword, requireAuth } from './auth';
@@ -13,6 +14,9 @@ dotenv.config();
 
 const app = express();
 const PORT = Number(process.env.SERVER_PORT || 4000);
+const DIST_DIR = path.join(process.cwd(), 'dist');
+// Auto-detect production: serve frontend if build exists
+const SERVE_FRONTEND = fs.existsSync(DIST_DIR);
 
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
@@ -52,10 +56,30 @@ app.use('/api/products', productsRouter);
 app.use('/api/company', companyRouter);
 app.use('/api/upload', uploadRouter);
 
+// =====================================================
+// Serve frontend build (dist/) + SPA fallback
+// Auto-enabled when dist/ exists (after `npm run build`)
+// =====================================================
+if (SERVE_FRONTEND) {
+  app.use(express.static(DIST_DIR));
+
+  // SPA fallback — any non-API/non-uploads route returns index.html
+  app.get(/^(?!\/api|\/uploads).*/, (_req, res) => {
+    res.sendFile(path.join(DIST_DIR, 'index.html'));
+  });
+}
+
 async function start() {
   await testConnection();
   app.listen(PORT, () => {
-    console.log(`✓ Backend running on http://localhost:${PORT}`);
+    console.log(`✓ Server running on http://localhost:${PORT}`);
+    if (SERVE_FRONTEND) {
+      console.log(`  → Frontend: http://localhost:${PORT}/`);
+      console.log(`  → Admin:    http://localhost:${PORT}/admin/login`);
+    } else {
+      console.log(`  → API only. Run "npm run build" first to serve frontend on this port`);
+      console.log(`  → Or use "npm run dev" for hot-reload (Vite at :3000)`);
+    }
   });
 }
 

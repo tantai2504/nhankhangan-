@@ -7,8 +7,11 @@
 //
 // Prerequisites:
 //   - MySQL running
-//   - .env has correct DB_HOST, DB_USER, DB_PASSWORD
-//   - User has CREATE/DROP privileges
+//   - Database already exists (script connects to DB_NAME from .env)
+//   - User has CREATE TABLE privileges on that database
+//
+// Compatible with shared hosting (aaPanel/cPanel) where users
+// cannot CREATE DATABASE — script strips those statements automatically.
 
 import mysql from 'mysql2/promise';
 import fs from 'fs';
@@ -18,6 +21,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const SQL_FILE = path.join(process.cwd(), 'server', 'db.sql');
+const DB_NAME = process.env.DB_NAME || 'nhankhangan';
 
 async function main() {
   if (!fs.existsSync(SQL_FILE)) {
@@ -26,30 +30,35 @@ async function main() {
   }
 
   // Read SQL with explicit UTF-8 encoding
-  const sql = fs.readFileSync(SQL_FILE, { encoding: 'utf8' });
+  let sql = fs.readFileSync(SQL_FILE, { encoding: 'utf8' });
   console.log(`✓ Read ${SQL_FILE} (${sql.length} chars, UTF-8)`);
 
-  // Connect WITHOUT specifying database (because db.sql creates it)
+  // Strip CREATE DATABASE / USE statements — DB must already exist on shared hosting
+  sql = sql
+    .replace(/CREATE\s+DATABASE[^;]*;/gi, '')
+    .replace(/USE\s+\S+;/gi, '');
+
+  // Connect DIRECTLY to the user's database (no CREATE DATABASE needed)
   const conn = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    multipleStatements: true,        // Allow running multiple statements at once
+    database: DB_NAME,
+    multipleStatements: true,
     charset: 'utf8mb4',
   });
 
-  console.log('✓ Connected to MySQL');
+  console.log(`✓ Connected to MySQL database "${DB_NAME}"`);
 
   try {
-    // Run all statements at once — mysql2 handles utf8mb4 properly
-    console.log('⏳ Executing db.sql...');
+    console.log('⏳ Executing db.sql (creating tables + seeding data)...');
     await conn.query(sql);
     console.log('✓ Database setup complete');
 
     // Verify by counting
-    const [catRows] = await conn.query('SELECT COUNT(*) as n FROM nhankhangan.categories');
-    const [prodRows] = await conn.query('SELECT COUNT(*) as n FROM nhankhangan.products');
+    const [catRows] = await conn.query('SELECT COUNT(*) as n FROM categories');
+    const [prodRows] = await conn.query('SELECT COUNT(*) as n FROM products');
     const cats = (catRows as { n: number }[])[0]?.n || 0;
     const prods = (prodRows as { n: number }[])[0]?.n || 0;
 
@@ -58,7 +67,7 @@ async function main() {
     console.log(`✓ ${prods} products seeded`);
 
     // Sanity check: pick one Vietnamese string and verify it's correct
-    const [sample] = await conn.query("SELECT name FROM nhankhangan.categories WHERE id = 'tape-packing'");
+    const [sample] = await conn.query("SELECT name FROM categories WHERE id = 'tape-packing'");
     const sampleName = (sample as { name: string }[])[0]?.name;
     console.log('');
     console.log(`Sample category name: "${sampleName}"`);

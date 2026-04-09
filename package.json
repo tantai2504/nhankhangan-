@@ -10,6 +10,7 @@
     "db:setup": "tsx server/setup-db.ts",
     "db:seed-images": "tsx server/copy-seed-images.ts",
     "build": "vite build",
+    "start": "tsx server/index.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
