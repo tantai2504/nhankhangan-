@@ -13,8 +13,7 @@ const Contact = () => {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim()) return;
     setFormState('submitting');
-    // TODO: Replace with actual API call
-    console.log('Contact form submitted:', form);
+    // TODO: Replace with actual API call to /api/contact endpoint
     setTimeout(() => {
       setFormState('success');
       setForm({ name: '', phone: '', company: '', productGroup: '', message: '' });

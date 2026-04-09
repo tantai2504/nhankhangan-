@@ -60,6 +60,14 @@ const AIChatbot = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Show lead form after 4+ messages — properly cleaned up
+  useEffect(() => {
+    if (messages.length >= 4 && !showLeadForm) {
+      const timer = setTimeout(() => setShowLeadForm(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [messages.length, showLeadForm]);
+
   // Build conversation history for context
   const buildChatHistory = (userMessage: string) => {
     const history = messages.slice(-8).map(m => ({
@@ -92,10 +100,6 @@ const AIChatbot = () => {
 
       const botResponse = response.text || "Xin lỗi, em gặp chút trục trặc. Anh/Chị vui lòng gọi hotline " + COMPANY_INFO.phone + " để được hỗ trợ ngay ạ!";
       setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
-
-      if (messages.length >= 4 && !showLeadForm) {
-        setTimeout(() => setShowLeadForm(true), 1000);
-      }
     } catch (error) {
       console.error("Chatbot Error:", error);
       setMessages(prev => [...prev, { role: 'bot', text: `Em đang bận một chút, Anh/Chị có thể gọi hotline ${COMPANY_INFO.phone} để được hỗ trợ ngay lập tức ạ!` }]);

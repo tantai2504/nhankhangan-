@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as Icons from 'lucide-react';
-import { CATEGORIES } from '../../constants';
+import { CATEGORIES as STATIC_CATEGORIES } from '../../constants';
+import { apiGetCategories, apiGetProducts, ApiCategory, ApiProduct } from '../../services/api';
+import { Product, Category } from '../../types';
 
 const PROMO_LINE_1 = 'Sản xuất trực tiếp — Giá gốc tại xưởng — Gia công theo yêu cầu — Giao hàng toàn quốc — In logo thương hiệu — Bán sỉ số lượng lớn';
 const PROMO_LINE_2 = 'Băng keo trong ★ Băng keo đục ★ Màng PE ★ Xốp hơi ★ Dây đai PP ★ Vít bắn tôn ★ Chống dột X2000 ★ Băng keo 3M ★ Dao cắt keo ★ Dây rút';
@@ -10,24 +12,51 @@ const ProductCategories = () => {
   const [activeCat, setActiveCat] = useState<string>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const expandRef = useRef<HTMLDivElement>(null);
+  const [categories, setCategories] = useState<Category[]>(STATIC_CATEGORIES);
+
+  // Fetch from API; fall back to static data if API fails or returns empty
+  useEffect(() => {
+    Promise.all([apiGetCategories(), apiGetProducts()])
+      .then(([cats, prods]: [ApiCategory[], ApiProduct[]]) => {
+        if (!cats.length) return; // keep static fallback
+        const merged: Category[] = cats.map(c => ({
+          id: c.id,
+          name: c.name,
+          icon: c.icon,
+          description: c.description,
+          products: prods.filter(p => p.category === c.id).map<Product>(p => ({
+            id: p.id,
+            category: p.category,
+            name: p.name,
+            description: p.description,
+            image: p.image,
+            features: p.features,
+            isFeatured: p.isFeatured,
+            industryTag: p.industryTag || undefined,
+          })),
+        }));
+        setCategories(merged);
+      })
+      .catch(() => { /* silent fallback to static */ });
+  }, []);
 
   const filtered = activeCat === 'all'
-    ? CATEGORIES.flatMap(c => c.products)
-    : CATEGORIES.find(c => c.id === activeCat)?.products || [];
+    ? categories.flatMap(c => c.products)
+    : categories.find(c => c.id === activeCat)?.products || [];
 
   const activeName = activeCat === 'all'
     ? 'Tất cả sản phẩm'
-    : CATEGORIES.find(c => c.id === activeCat)?.name || '';
+    : categories.find(c => c.id === activeCat)?.name || '';
 
   const expandedProduct = expandedId ? filtered.find(p => p.id === expandedId) || null : null;
 
-  // Smooth scroll to expanded card
+  // Smooth scroll to expanded card — cleaned up on unmount/change
   useEffect(() => {
-    if (expandedId && expandRef.current) {
-      setTimeout(() => {
-        expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 100);
-    }
+    if (!expandedId || !expandRef.current) return;
+    const timer = setTimeout(() => {
+      expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+    return () => clearTimeout(timer);
   }, [expandedId]);
 
   const handleCardClick = (id: string) => {
@@ -95,9 +124,9 @@ const ProductCategories = () => {
                     activeCat === 'all' ? 'bg-brand-dark text-white' : 'text-slate-700 hover:bg-brand-bg'
                   }`}
                 >
-                  Tất cả ({CATEGORIES.flatMap(c => c.products).length})
+                  Tất cả ({categories.flatMap(c => c.products).length})
                 </button>
-                {CATEGORIES.map(cat => {
+                {categories.map(cat => {
                   const Icon = (Icons as any)[cat.icon];
                   return (
                     <button
@@ -129,7 +158,7 @@ const ProductCategories = () => {
             >
               Tất cả
             </button>
-            {CATEGORIES.map(cat => {
+            {categories.map(cat => {
               const Icon = (Icons as any)[cat.icon];
               return (
                 <button

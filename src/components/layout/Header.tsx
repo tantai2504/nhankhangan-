@@ -16,24 +16,22 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Trang chủ', href: '#home' },
-    { name: 'Giới thiệu', href: '#about' },
     { name: 'Sản phẩm', href: '#products' },
-    { name: 'Năng lực', href: '#capabilities' },
-    { name: 'Liên hệ', href: '#contact' },
+    { name: 'Liên hệ', href: 'tel:0944272726' },
+    { name: 'Quản lý', href: '/admin' },
   ];
 
   return (
     <header
       className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md py-1' : 'bg-slate-900/30 backdrop-blur-sm py-3'
+        isScrolled ? 'bg-white shadow-md py-1' : 'bg-white/95 backdrop-blur-sm shadow-sm py-2'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <a href="/" className="flex items-center space-x-1">
-            <img src={logo} alt="Nhân Khang An" className={`h-12 md:h-14 w-auto transition-all duration-300 ${isScrolled ? '' : 'brightness-0 invert'}`} />
+            <img src={logo} alt="Nhân Khang An" className="h-12 md:h-14 w-auto" />
           </a>
 
           {/* Desktop Nav */}
@@ -42,18 +40,16 @@ const Header = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className={`text-sm font-bold transition-colors ${
-                  isScrolled ? 'text-slate-700 hover:text-brand-dark' : 'text-white hover:text-brand-light'
-                }`}
+                className="text-sm font-bold text-slate-700 hover:text-brand-dark transition-colors"
               >
                 {link.name}
               </a>
             ))}
             <a
-              href="#contact"
+              href="tel:0944272726"
               className="btn-accent px-5 py-2.5 text-sm"
             >
-              Tư vấn ngay
+              Gọi 0944 27 27 26
             </a>
           </nav>
 
@@ -61,7 +57,7 @@ const Header = () => {
           <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 rounded-lg ${isScrolled ? 'text-slate-700' : 'text-white'} hover:bg-white/10 focus:outline-none transition-colors`}
+              className="p-2 rounded-lg text-slate-700 hover:bg-slate-100 focus:outline-none transition-colors"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
